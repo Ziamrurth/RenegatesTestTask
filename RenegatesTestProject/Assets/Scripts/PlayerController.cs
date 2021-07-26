@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
+    public Transform finishPoint;
+
     private Camera cam;
 
     private NavMeshAgent agent;
@@ -22,21 +25,26 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (agent.desiredVelocity == Vector3.zero && isMoving)
+        if (agent.desiredVelocity == Vector3.zero)
         {
             isMoving = false;
+        }
+        else
+        {
+            isMoving = true;
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if(Physics.Raycast(ray, out hit))
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                agent.SetDestination(hit.point);
+                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
 
-                isMoving = true;
+                if (Physics.Raycast(ray, out hit))
+                {
+                    agent.SetDestination(hit.point);
+                }
             }
         }
 
@@ -51,5 +59,10 @@ public class PlayerController : MonoBehaviour
             anim.speed = 1;
         }
         
+    }
+
+    public void RunToFinish()
+    {
+        agent.SetDestination(finishPoint.position);
     }
 }
