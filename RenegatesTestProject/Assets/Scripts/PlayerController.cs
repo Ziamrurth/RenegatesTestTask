@@ -41,5 +41,15 @@ public class PlayerController : MonoBehaviour
         }
 
         anim.SetBool("IsMoving", isMoving);
+
+        if (isMoving)
+        {
+            anim.speed = agent.velocity.magnitude / agent.speed;
+        }
+        else
+        {
+            anim.speed = 1;
+        }
+        
     }
 }
